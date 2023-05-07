@@ -21,6 +21,7 @@ app.get("/", (req, res) => {
 });
 app.use("/auth", require("./routes/auth"));
 app.use("/transac", require("./routes/transaction"));
+app.use("/certificate", require("./routes/certificate"));
 // app.listen() method will make and setup the express app in given PORT
 app.listen(PORT, () => {
   console.log(`App is listening at port:${PORT}`);

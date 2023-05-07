@@ -19,13 +19,16 @@ router.post(
     if (!errs.isEmpty()) {
       res.status(400).json({ errors: errs.array() });
     }
+
     let user = await users.findOne({ email: req.body.email });
     if (user) {
       res
         .status(400)
         .json({ msg: "Sorry user with Email Already exist,You can Login" });
+      return;
     }
     let salt = await bcrypt.genSalt(10);
+
     let securePassword = await bcrypt.hash(req.body.password, salt);
     user = await users.create({
       name: req.body.name,
@@ -59,7 +62,9 @@ router.post(
         id: user.id,
       },
     };
-    let authToken = jwt.sign(jwtData, process.env.JWTSIGN);
+    let authToken = jwt.sign(jwtData, process.env.JWTSIGN, {
+      expiresIn: "3h",
+    });
     if (bcrypt.compareSync(req.body.password, user.password)) {
       return res
         .status(200)
