@@ -57,18 +57,33 @@ router.post(
       });
       return;
     }
-    let jwtData = {
-      user: {
-        id: user.id,
-      },
-    };
+    let role;
+    let jwtData = {};
+    if (user.email === "imadmin@gmail.com") {
+      jwtData = {
+        user: {
+          id: user.id,
+          role: "admin",
+        },
+      };
+      role = "admin";
+    } else {
+      jwtData = {
+        user: {
+          id: user.id,
+          role: "user",
+        },
+      };
+      role = "user";
+    }
+
     let authToken = jwt.sign(jwtData, process.env.JWTSIGN, {
       expiresIn: "3h",
     });
     if (bcrypt.compareSync(req.body.password, user.password)) {
       return res
         .status(200)
-        .json({ msg: "User Signed in successfully", authToken });
+        .json({ msg: "User Signed in successfully", authToken, role });
     } else {
       res.status(400).json({ msg: "Entered password is wrong" });
     }
