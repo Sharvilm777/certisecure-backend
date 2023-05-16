@@ -7,7 +7,8 @@ const isAdmin = require("../middleware/isAdmin");
 // api: certificate/addCertificate;
 router.post("/addCertificate", isAdmin, async (req, res) => {
   let addedCertificate = await CertificateModel.create({
-    c_hash: req.body.hash,
+    c_hash: req.body.C_hash,
+    t_hash: req.body.T_hash,
   });
   res
     .status(200)

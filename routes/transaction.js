@@ -3,8 +3,13 @@ const router = express.Router();
 const isAdmin = require("../middleware/isAdmin");
 const transaction = require("../models/transaction");
 // Route 1 :GET -  /getTransac  Get All transaction that are stored in db
-router.get("/getTransac", isAdmin, (req, res) => {
-  res.send("Admin authorization complete");
+router.get("/getTransac", isAdmin, async (req, res) => {
+  try {
+    const allTrans = await transaction.find({});
+    res.json(allTrans);
+  } catch (error) {
+    res.status(500).json({ error: "Some Internal Server error" });
+  }
 });
 
 // Route 2 :POST - /addTransac Add the transaction after successfull verification of certificate

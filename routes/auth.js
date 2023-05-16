@@ -36,7 +36,7 @@ router.post(
       email: req.body.email,
       password: securePassword,
     });
-    res.json({ msg: "User Created Successfully", user });
+    res.status(200).json({ msg: "User Created Successfully", user });
   }
 );
 
