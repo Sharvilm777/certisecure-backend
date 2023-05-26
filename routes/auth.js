@@ -11,13 +11,15 @@ router.post(
   "/signup",
   [
     body("name").isLength({ min: 3 }),
-    body("password").isLength({ min: 6 }),
+    body("password").isLength({ min: 8 }),
     body("email").isEmail(),
   ],
   async (req, res) => {
     const errs = validationResult(req);
+
     if (!errs.isEmpty()) {
-      res.status(400).json({ errors: errs.array() });
+      res.status(406).json({ errors: errs.array() });
+      return;
     }
 
     let user = await users.findOne({ email: req.body.email });
@@ -32,11 +34,11 @@ router.post(
     let securePassword = await bcrypt.hash(req.body.password, salt);
     user = await users.create({
       name: req.body.name,
-      dob: req.body.dob,
       email: req.body.email,
       password: securePassword,
     });
-    res.status(200).json({ msg: "User Created Successfully", user });
+    res.status(201).json({ msg: "User Created Successfully", user });
+    return;
   }
 );
 
@@ -48,7 +50,8 @@ router.post(
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      res.status(400).json({ errors: errors.array() });
+      res.status(406).json({ errors: errors.array() });
+      return;
     }
     let user = await users.findOne({ email: req.body.email });
     if (!user) {
@@ -85,7 +88,7 @@ router.post(
         .status(200)
         .json({ msg: "User Signed in successfully", authToken, role });
     } else {
-      res.status(400).json({ msg: "Entered password is wrong" });
+      return res.status(400).json({ msg: "Entered password is wrong" });
     }
   }
 );
